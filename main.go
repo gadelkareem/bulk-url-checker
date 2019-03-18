@@ -59,7 +59,7 @@ loop:
 		}
 
 		for i := *urlCol + 1; i < len(line); i++ {
-			k := strings.TrimSpace(line[i])
+			k := strings.ToLower(strings.TrimSpace(line[i]))
 			content = strings.ToLower(content)
 			if !strings.Contains(content, k) {
 				addError(fmt.Sprintf("Keyword %s not found", k), u, nil)
