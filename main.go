@@ -20,13 +20,17 @@ var (
 	infile     = flag.String("infile", "urls.csv", "urls file path")
 	outfile    = flag.String("outfile", "results.csv", "results file path")
 	comma      = flag.String("comma", ";", "splitter character")
-	urlCol     = flag.Int("urlCol", 1, "URL column")
+	urlCol     = flag.Int("urlCol", 0, "URL column")
 )
-
+// go build ; ./bulk-url-checker -infile=fixed.csv
+// go build ; ./bulk-url-checker -urlCol=1
 func main() {
+
+	flag.Parse()
 	csvFile, err := os.Open(*infile)
 	h.PanicOnError(err)
 	defer csvFile.Close()
+	fmt.Printf("Reading file %s\n", *infile)
 	r := csv.NewReader(csvFile)
 	r.Comma = []rune(*comma)[0]
 	r.Read() //header
@@ -40,6 +44,9 @@ loop:
 			panic(err)
 		}
 		u := line[*urlCol]
+		if u == "" {
+			continue
+		}
 		fmt.Printf("URL: %s ", u)
 		content, err := h.GetUrl(u)
 		if err != nil {
@@ -53,6 +60,7 @@ loop:
 
 		for i := *urlCol + 1; i < len(line); i++ {
 			k := strings.TrimSpace(line[i])
+			content = strings.ToLower(content)
 			if !strings.Contains(content, k) {
 				addError(fmt.Sprintf("Keyword %s not found", k), u, nil)
 				continue loop
