@@ -4,5 +4,5 @@ Handy command line app to bulk check validity of URLs and if they have certain k
 
 Usage:
 ```bash
-bulk-url-checker -urlCol=1 -infile=articles.csv
+./bulk-url-checker -urlCol=1 -infile=articles.csv
 ```
